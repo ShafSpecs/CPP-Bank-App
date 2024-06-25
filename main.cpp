@@ -27,10 +27,18 @@ int main() {
                 case 1: {
                     cout << endl << "Opening an account...\n";
 
+                    cout << "Enter account holder name: ";
+                    string account_holder {};
+                    cin >> account_holder;
+
                     const string account_number = Account::generate_account_number();
 
-                    Account account(account_number);
-                    accounts.emplace_back(account);
+                    try {
+                        Account account(account_holder, account_number);
+                        accounts.emplace_back(account);
+                    } catch (const invalid_argument &e) {
+                        cerr << e.what() << endl;
+                    }
 
                     cout << "New account opened with account number: " << account_number << "!\n";
                     break;
@@ -67,6 +75,7 @@ int main() {
                     if (auto it = find_if(accounts.begin(), accounts.end(), [&account_number](const Account &account) -> bool {
                         return account.getAccountNumber() == account_number;
                     }); it != accounts.end()) {
+                        cout << "Account holder: " << it->getAccountName() << endl;
                         cout << "Enter amount to deposit: ";
                         double amount {};
                         cin >> amount;
@@ -93,12 +102,13 @@ int main() {
                     if (auto it = find_if(accounts.begin(), accounts.end(), [&account_number](const Account &account) -> bool {
                         return account.getAccountNumber() == account_number;
                     }); it != accounts.end()) {
+                        cout << "Account holder: " << it->getAccountName() << endl;
                         cout << "Enter amount to withdraw: ";
                         double amount;
                         cin >> amount;
 
                         try {
-                            double withdrawn = it->withdraw(amount);
+                            const double withdrawn = it->withdraw(amount);
                             cout << "Withdrew $" << withdrawn << " from account " << account_number << ".\n";
                         } catch (const invalid_argument &e) {
                             cerr << e.what() << endl;
@@ -118,6 +128,7 @@ int main() {
                     if (auto from_account = find_if(accounts.begin(), accounts.end(), [&from_account_number](const Account &account) {
                         return account.getAccountNumber() == from_account_number;
                     }); from_account != accounts.end()) {
+                        cout << "Enter account holder: " << from_account->getAccountName() << endl << endl;
                         cout << "Enter account number to transfer to: ";
                         string to_account_number {};
                         cin >> to_account_number;
@@ -125,6 +136,7 @@ int main() {
                         if (auto to_account = find_if(accounts.begin(), accounts.end(), [&to_account_number](const Account &account) {
                             return account.getAccountNumber() == to_account_number;
                         }); to_account != accounts.end()) {
+                            cout << "Beneficiary account holder: " << to_account->getAccountName() << endl << endl;
                             cout << "Enter amount to transfer: ";
                             double amount {};
                             cin >> amount;
@@ -155,6 +167,7 @@ int main() {
                     if (auto it = find_if(accounts.begin(), accounts.end(), [&account_number](const Account &account) {
                         return account.getAccountNumber() == account_number;
                     }); it != accounts.end()) {
+                        cout << "\nAccount holder: " << it->getAccountName() << endl;
                         cout << "Balance of account " << account_number << " is $" << it->getBalance() << ".\n";
                     }
                     else {
