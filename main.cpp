@@ -142,8 +142,7 @@ int main() {
                             cin >> amount;
 
                             try {
-                                from_account->withdraw(amount);
-                                to_account->deposit(amount);
+                                Account::transfer(*from_account, *to_account, amount);
 
                                 cout << "Transferred $" << amount << " from account " << from_account_number << " to account " << to_account_number << ".\n";
                             } catch (const invalid_argument &e) {
